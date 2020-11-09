@@ -7,19 +7,18 @@ def preencherLogin():
     print("Favor preencha os campos solicitados.")
     email = input("Informe seu email: ")
     senha = getpass.getpass("Informe sua senha: ")
+    print("Acessando G5...")
     ListaSitesG5().login(email, senha)
 
-def preencherSite():
-    site = input("Qual é o nome do site?\nObs: O mesmo deve ser descrito exatamente igual como está no G5.\nSite: ")
-    ListaSitesG5().verificaSiteG5(site)
+
+preencherLogin()
+while(ListaSitesG5().testaLogin() == False):
+    print("Ocorreu um erro.")
+    preencherLogin()
 
 answer = 's'
-while answer == 's':
-    preencherLogin()
-    while(ListaSitesG5().testaLogin() == False):
-        preencherLogin()
-
+while (answer == 's' or answer == 'S'):
     site = input("Qual é o nome do site?\nObs: O mesmo deve ser descrito exatamente igual como está no G5.\nSite: ")
 
     ListaEquipamentosG5().run(site)
-    answer = input("Deseja pesquisar outro equipamento?? ")
+    answer = input("Deseja pesquisar outro equipamento?(s/n) ")
