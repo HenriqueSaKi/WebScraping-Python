@@ -30,15 +30,13 @@ class ListaSitesG5:
             return True
 
     def verificaSiteG5(self):
-        if driver.find_elements_by_xpath("//li[contains(text(), 'Nenhum resultado encontrado')]"):
-            return False
-        else:
-            return True
+        if driver.find_element_by_xpath("//li[contains(text(), 'Nenhum ')]") #####VALIDAR
 
     def acessaSite(self, site):
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//tbody//tr[@class='odd']")))
-        driver.find_element_by_xpath("//span[@class='select2-selection__rendered']").click()
-        driver.find_element_by_xpath("//input[@class='select2-search__field']").send_keys(site)
+        while verificaSiteG5() == False: ######VALIDAR
+            driver.find_element_by_xpath("//span[@class='select2-selection__rendered']").click()
+            driver.find_element_by_xpath("//input[@class='select2-search__field']").send_keys(site)
         driver.find_element_by_xpath("//span[@class='select2-results']//ul//li[1]").click()
         WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "//tbody//tr//a[contains(text(), '{}')]".format(site))))
 
@@ -46,7 +44,6 @@ class ListaSitesG5:
         self.acessaSite(site)
         print("Aguarde, estamos validando as informações")
         time.sleep(4)
-        #driver.find_element_by_id("select2-eqpts-container").click()
         driver.find_element_by_xpath("//span[contains(text(), 'Selecione um equipamento')]").click()
         WebDriverWait(driver, 20).until(EC.visibility_of_all_elements_located((By.XPATH, "//ul[@id='select2-eqpts-results']")))
         equipamentos = driver.find_elements_by_xpath("//ul[@id='select2-eqpts-results']//li")
