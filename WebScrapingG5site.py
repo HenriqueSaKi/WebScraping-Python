@@ -13,7 +13,7 @@ driver = webdriver.Chrome(executable_path=r'./chromedriver.exe', options=options
 listaSites = []
 listaEquipamentos = []
 
-class ListaSitesG5:
+class ListaSitesG5():
     def __init__(self):
         pass
 
@@ -29,16 +29,30 @@ class ListaSitesG5:
         elif driver.find_elements_by_xpath("//div[@id='nav']"):
             return True
 
-    def verificaSiteG5(self):
-        if driver.find_element_by_xpath("//li[contains(text(), 'Nenhum ')]") #####VALIDAR
+    def verificaSiteG5(self, site):
+        mensagem = driver.find_element_by_xpath("//span[@class='select2-results']//ul//li[1]")
+        if mensagem.text == 'Nenhum resultado encontrado':
+            return False
+        elif mensagem.text == site:
+            return True
 
     def acessaSite(self, site):
+        feedback = 0
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, "//tbody//tr[@class='odd']")))
-        while verificaSiteG5() == False: ######VALIDAR
-            driver.find_element_by_xpath("//span[@class='select2-selection__rendered']").click()
-            driver.find_element_by_xpath("//input[@class='select2-search__field']").send_keys(site)
-        driver.find_element_by_xpath("//span[@class='select2-results']//ul//li[1]").click()
+        driver.find_element_by_xpath("//span[@class='select2-selection__rendered']").click()
+        while feedback == 0:
+            element = driver.find_element_by_xpath("//input[@class='select2-search__field']")
+            element.clear()
+            element.send_keys(site)
+            self.verificaSiteG5(site)
+            if self.verificaSiteG5(site) == False:
+                site = input("Não encontrado. Favor digite o nome do site novamente.\nSite: ")
+                feedback = 0
+            else:
+                driver.find_element_by_xpath("//span[@class='select2-results']//ul//li[1]").click()
+                feedback = 1
         WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, "//tbody//tr//a[contains(text(), '{}')]".format(site))))
+        return site
 
     def listarEquipamentoG5(self, site):
         self.acessaSite(site)
