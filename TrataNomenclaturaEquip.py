@@ -13,14 +13,18 @@ class TrataLista:
     def separaPalavras(self, equipamento):
         return self.caixaBaixa(equipamento).split(' ')
 
-    def compara(self, equipamento):
+    def compara(self, equipamento, filtro):
+        resultado = []
         for i in self.separaPalavras(equipamento):
-            if i == self.caixaBaixa('climatizacao'):
-                return "Deu certo!"
-            else:
-                return "Não deu certo."
+            for j in self.caixaBaixa(filtro):
+                if i == j:
+                    resultado.append(j)
+        return resultado
 
-retorna = TrataLista().compara('Climatização - Módulo 1')
-print(retorna)
-#Função de extração de informação importante (Isolamento, CAG, TI, Centro Cirúrgico/CC, Arsenal, etc...)
-#Função run retornando a lista com os valores filtrados
+
+"""
+#Método para ser aplicado no arquivo principal
+for i in listaEquipamentos: #A partir da lista contendo todos os equipamentos do site escolhido
+    for j in equipamento[i]: #Executa métodos em cada equipamento
+        TrataLista().compara(equipamento[i], GrauDeRisco().defineGrau())
+"""
